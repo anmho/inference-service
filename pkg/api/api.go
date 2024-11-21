@@ -1,4 +1,4 @@
-package inference
+package api
 
 import (
 	"connectrpc.com/connect"

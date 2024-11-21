@@ -214,15 +214,15 @@ func file_protos_v1_inference_service_proto_rawDescGZIP() []byte {
 
 var file_protos_v1_inference_service_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
 var file_protos_v1_inference_service_proto_goTypes = []any{
-	(*CompletionsRequest)(nil),        // 0: inference.v1.CompletionsRequest
-	(*GetCompletionsResponse)(nil),    // 1: inference.v1.GetCompletionsResponse
-	(*StreamCompletionsResponse)(nil), // 2: inference.v1.StreamCompletionsResponse
+	(*CompletionsRequest)(nil),        // 0: api.v1.CompletionsRequest
+	(*GetCompletionsResponse)(nil),    // 1: api.v1.GetCompletionsResponse
+	(*StreamCompletionsResponse)(nil), // 2: api.v1.StreamCompletionsResponse
 }
 var file_protos_v1_inference_service_proto_depIdxs = []int32{
-	0, // 0: inference.v1.InferenceService.GetCompletions:input_type -> inference.v1.CompletionsRequest
-	0, // 1: inference.v1.InferenceService.StreamCompletions:input_type -> inference.v1.CompletionsRequest
-	1, // 2: inference.v1.InferenceService.GetCompletions:output_type -> inference.v1.GetCompletionsResponse
-	2, // 3: inference.v1.InferenceService.StreamCompletions:output_type -> inference.v1.StreamCompletionsResponse
+	0, // 0: api.v1.InferenceService.GetCompletions:input_type -> api.v1.CompletionsRequest
+	0, // 1: api.v1.InferenceService.StreamCompletions:input_type -> api.v1.CompletionsRequest
+	1, // 2: api.v1.InferenceService.GetCompletions:output_type -> api.v1.GetCompletionsResponse
+	2, // 3: api.v1.InferenceService.StreamCompletions:output_type -> api.v1.StreamCompletionsResponse
 	2, // [2:4] is the sub-list for method output_type
 	0, // [0:2] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name

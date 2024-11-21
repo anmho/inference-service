@@ -1,6 +1,6 @@
 
 
-default: api cli
+default: pkg/api cli
 
 .PHONY: gen clean
 

@@ -5,7 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/anmho/inference/gen/protos/v1/inferencev1connect"
-	"github.com/anmho/inference/inference"
+	"github.com/anmho/inference/pkg/api"
 	"github.com/caarlos0/env/v11"
 	"github.com/google/generative-ai-go/genai"
 	"github.com/joho/godotenv"
@@ -44,7 +44,7 @@ func main() {
 	}
 
 	openaiClient := openai.NewClient(option.WithAPIKey(config.OpenAIAPIKey))
-	inferenceService := inference.NewService(openaiClient, googleAIClient)
+	inferenceService := api.NewService(openaiClient, googleAIClient)
 
 	mux := http.NewServeMux()
 	mux.Handle(inferencev1connect.NewInferenceServiceHandler(inferenceService))

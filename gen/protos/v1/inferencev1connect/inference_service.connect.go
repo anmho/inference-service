@@ -22,7 +22,7 @@ const _ = connect.IsAtLeastVersion1_13_0
 
 const (
 	// InferenceServiceName is the fully-qualified name of the InferenceService service.
-	InferenceServiceName = "inference.v1.InferenceService"
+	InferenceServiceName = "api.v1.InferenceService"
 )
 
 // These constants are the fully-qualified names of the RPCs defined in this package. They're
@@ -35,10 +35,10 @@ const (
 const (
 	// InferenceServiceGetCompletionsProcedure is the fully-qualified name of the InferenceService's
 	// GetCompletions RPC.
-	InferenceServiceGetCompletionsProcedure = "/inference.v1.InferenceService/GetCompletions"
+	InferenceServiceGetCompletionsProcedure = "/api.v1.InferenceService/GetCompletions"
 	// InferenceServiceStreamCompletionsProcedure is the fully-qualified name of the InferenceService's
 	// StreamCompletions RPC.
-	InferenceServiceStreamCompletionsProcedure = "/inference.v1.InferenceService/StreamCompletions"
+	InferenceServiceStreamCompletionsProcedure = "/api.v1.InferenceService/StreamCompletions"
 )
 
 // These variables are the protoreflect.Descriptor objects for the RPCs defined in this package.
@@ -48,13 +48,13 @@ var (
 	inferenceServiceStreamCompletionsMethodDescriptor = inferenceServiceServiceDescriptor.Methods().ByName("StreamCompletions")
 )
 
-// InferenceServiceClient is a client for the inference.v1.InferenceService service.
+// InferenceServiceClient is a client for the api.v1.InferenceService service.
 type InferenceServiceClient interface {
 	GetCompletions(context.Context, *connect.Request[v1.CompletionsRequest]) (*connect.Response[v1.GetCompletionsResponse], error)
 	StreamCompletions(context.Context, *connect.Request[v1.CompletionsRequest]) (*connect.ServerStreamForClient[v1.StreamCompletionsResponse], error)
 }
 
-// NewInferenceServiceClient constructs a client for the inference.v1.InferenceService service. By
+// NewInferenceServiceClient constructs a client for the api.v1.InferenceService service. By
 // default, it uses the Connect protocol with the binary Protobuf Codec, asks for gzipped responses,
 // and sends uncompressed requests. To use the gRPC or gRPC-Web protocols, supply the
 // connect.WithGRPC() or connect.WithGRPCWeb() options.
@@ -85,17 +85,17 @@ type inferenceServiceClient struct {
 	streamCompletions *connect.Client[v1.CompletionsRequest, v1.StreamCompletionsResponse]
 }
 
-// GetCompletions calls inference.v1.InferenceService.GetCompletions.
+// GetCompletions calls api.v1.InferenceService.GetCompletions.
 func (c *inferenceServiceClient) GetCompletions(ctx context.Context, req *connect.Request[v1.CompletionsRequest]) (*connect.Response[v1.GetCompletionsResponse], error) {
 	return c.getCompletions.CallUnary(ctx, req)
 }
 
-// StreamCompletions calls inference.v1.InferenceService.StreamCompletions.
+// StreamCompletions calls api.v1.InferenceService.StreamCompletions.
 func (c *inferenceServiceClient) StreamCompletions(ctx context.Context, req *connect.Request[v1.CompletionsRequest]) (*connect.ServerStreamForClient[v1.StreamCompletionsResponse], error) {
 	return c.streamCompletions.CallServerStream(ctx, req)
 }
 
-// InferenceServiceHandler is an implementation of the inference.v1.InferenceService service.
+// InferenceServiceHandler is an implementation of the api.v1.InferenceService service.
 type InferenceServiceHandler interface {
 	GetCompletions(context.Context, *connect.Request[v1.CompletionsRequest]) (*connect.Response[v1.GetCompletionsResponse], error)
 	StreamCompletions(context.Context, *connect.Request[v1.CompletionsRequest], *connect.ServerStream[v1.StreamCompletionsResponse]) error
@@ -119,7 +119,7 @@ func NewInferenceServiceHandler(svc InferenceServiceHandler, opts ...connect.Han
 		connect.WithSchema(inferenceServiceStreamCompletionsMethodDescriptor),
 		connect.WithHandlerOptions(opts...),
 	)
-	return "/inference.v1.InferenceService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	return "/api.v1.InferenceService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case InferenceServiceGetCompletionsProcedure:
 			inferenceServiceGetCompletionsHandler.ServeHTTP(w, r)
@@ -135,9 +135,9 @@ func NewInferenceServiceHandler(svc InferenceServiceHandler, opts ...connect.Han
 type UnimplementedInferenceServiceHandler struct{}
 
 func (UnimplementedInferenceServiceHandler) GetCompletions(context.Context, *connect.Request[v1.CompletionsRequest]) (*connect.Response[v1.GetCompletionsResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("inference.v1.InferenceService.GetCompletions is not implemented"))
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("api.v1.InferenceService.GetCompletions is not implemented"))
 }
 
 func (UnimplementedInferenceServiceHandler) StreamCompletions(context.Context, *connect.Request[v1.CompletionsRequest], *connect.ServerStream[v1.StreamCompletionsResponse]) error {
-	return connect.NewError(connect.CodeUnimplemented, errors.New("inference.v1.InferenceService.StreamCompletions is not implemented"))
+	return connect.NewError(connect.CodeUnimplemented, errors.New("api.v1.InferenceService.StreamCompletions is not implemented"))
 }
