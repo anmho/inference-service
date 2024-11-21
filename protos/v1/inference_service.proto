@@ -4,14 +4,21 @@ package inference.v1;
 
 option go_package = "github.com/anmho/inference/gen/inference/v1;inferencev1";
 
-message GreetRequest {
-  string name = 1;
+message CompletionsRequest {
+  string prompt = 1;
+  string role = 2;
 }
 
-message GreetResponse {
-  string greeting = 1;
+message GetCompletionsResponse {
+  string response = 1;
 }
 
-service GreetService {
-  rpc Greet(GreetRequest) returns (GreetResponse) {}
+
+message StreamCompletionsResponse {
+  string chunk = 1;
+}
+
+service InferenceService {
+  rpc GetCompletions(CompletionsRequest) returns (GetCompletionsResponse) {}
+  rpc StreamCompletions(CompletionsRequest) returns (stream StreamCompletionsResponse) {}
 }

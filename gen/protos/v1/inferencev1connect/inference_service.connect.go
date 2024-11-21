@@ -21,8 +21,8 @@ import (
 const _ = connect.IsAtLeastVersion1_13_0
 
 const (
-	// GreetServiceName is the fully-qualified name of the GreetService service.
-	GreetServiceName = "inference.v1.GreetService"
+	// InferenceServiceName is the fully-qualified name of the InferenceService service.
+	InferenceServiceName = "inference.v1.InferenceService"
 )
 
 // These constants are the fully-qualified names of the RPCs defined in this package. They're
@@ -33,80 +33,111 @@ const (
 // reflection-formatted method names, remove the leading slash and convert the remaining slash to a
 // period.
 const (
-	// GreetServiceGreetProcedure is the fully-qualified name of the GreetService's Greet RPC.
-	GreetServiceGreetProcedure = "/inference.v1.GreetService/Greet"
+	// InferenceServiceGetCompletionsProcedure is the fully-qualified name of the InferenceService's
+	// GetCompletions RPC.
+	InferenceServiceGetCompletionsProcedure = "/inference.v1.InferenceService/GetCompletions"
+	// InferenceServiceStreamCompletionsProcedure is the fully-qualified name of the InferenceService's
+	// StreamCompletions RPC.
+	InferenceServiceStreamCompletionsProcedure = "/inference.v1.InferenceService/StreamCompletions"
 )
 
 // These variables are the protoreflect.Descriptor objects for the RPCs defined in this package.
 var (
-	greetServiceServiceDescriptor     = v1.File_protos_v1_inference_service_proto.Services().ByName("GreetService")
-	greetServiceGreetMethodDescriptor = greetServiceServiceDescriptor.Methods().ByName("Greet")
+	inferenceServiceServiceDescriptor                 = v1.File_protos_v1_inference_service_proto.Services().ByName("InferenceService")
+	inferenceServiceGetCompletionsMethodDescriptor    = inferenceServiceServiceDescriptor.Methods().ByName("GetCompletions")
+	inferenceServiceStreamCompletionsMethodDescriptor = inferenceServiceServiceDescriptor.Methods().ByName("StreamCompletions")
 )
 
-// GreetServiceClient is a client for the inference.v1.GreetService service.
-type GreetServiceClient interface {
-	Greet(context.Context, *connect.Request[v1.GreetRequest]) (*connect.Response[v1.GreetResponse], error)
+// InferenceServiceClient is a client for the inference.v1.InferenceService service.
+type InferenceServiceClient interface {
+	GetCompletions(context.Context, *connect.Request[v1.CompletionsRequest]) (*connect.Response[v1.GetCompletionsResponse], error)
+	StreamCompletions(context.Context, *connect.Request[v1.CompletionsRequest]) (*connect.ServerStreamForClient[v1.StreamCompletionsResponse], error)
 }
 
-// NewGreetServiceClient constructs a client for the inference.v1.GreetService service. By default,
-// it uses the Connect protocol with the binary Protobuf Codec, asks for gzipped responses, and
-// sends uncompressed requests. To use the gRPC or gRPC-Web protocols, supply the connect.WithGRPC()
-// or connect.WithGRPCWeb() options.
+// NewInferenceServiceClient constructs a client for the inference.v1.InferenceService service. By
+// default, it uses the Connect protocol with the binary Protobuf Codec, asks for gzipped responses,
+// and sends uncompressed requests. To use the gRPC or gRPC-Web protocols, supply the
+// connect.WithGRPC() or connect.WithGRPCWeb() options.
 //
 // The URL supplied here should be the base URL for the Connect or gRPC server (for example,
 // http://api.acme.com or https://acme.com/grpc).
-func NewGreetServiceClient(httpClient connect.HTTPClient, baseURL string, opts ...connect.ClientOption) GreetServiceClient {
+func NewInferenceServiceClient(httpClient connect.HTTPClient, baseURL string, opts ...connect.ClientOption) InferenceServiceClient {
 	baseURL = strings.TrimRight(baseURL, "/")
-	return &greetServiceClient{
-		greet: connect.NewClient[v1.GreetRequest, v1.GreetResponse](
+	return &inferenceServiceClient{
+		getCompletions: connect.NewClient[v1.CompletionsRequest, v1.GetCompletionsResponse](
 			httpClient,
-			baseURL+GreetServiceGreetProcedure,
-			connect.WithSchema(greetServiceGreetMethodDescriptor),
+			baseURL+InferenceServiceGetCompletionsProcedure,
+			connect.WithSchema(inferenceServiceGetCompletionsMethodDescriptor),
+			connect.WithClientOptions(opts...),
+		),
+		streamCompletions: connect.NewClient[v1.CompletionsRequest, v1.StreamCompletionsResponse](
+			httpClient,
+			baseURL+InferenceServiceStreamCompletionsProcedure,
+			connect.WithSchema(inferenceServiceStreamCompletionsMethodDescriptor),
 			connect.WithClientOptions(opts...),
 		),
 	}
 }
 
-// greetServiceClient implements GreetServiceClient.
-type greetServiceClient struct {
-	greet *connect.Client[v1.GreetRequest, v1.GreetResponse]
+// inferenceServiceClient implements InferenceServiceClient.
+type inferenceServiceClient struct {
+	getCompletions    *connect.Client[v1.CompletionsRequest, v1.GetCompletionsResponse]
+	streamCompletions *connect.Client[v1.CompletionsRequest, v1.StreamCompletionsResponse]
 }
 
-// Greet calls inference.v1.GreetService.Greet.
-func (c *greetServiceClient) Greet(ctx context.Context, req *connect.Request[v1.GreetRequest]) (*connect.Response[v1.GreetResponse], error) {
-	return c.greet.CallUnary(ctx, req)
+// GetCompletions calls inference.v1.InferenceService.GetCompletions.
+func (c *inferenceServiceClient) GetCompletions(ctx context.Context, req *connect.Request[v1.CompletionsRequest]) (*connect.Response[v1.GetCompletionsResponse], error) {
+	return c.getCompletions.CallUnary(ctx, req)
 }
 
-// GreetServiceHandler is an implementation of the inference.v1.GreetService service.
-type GreetServiceHandler interface {
-	Greet(context.Context, *connect.Request[v1.GreetRequest]) (*connect.Response[v1.GreetResponse], error)
+// StreamCompletions calls inference.v1.InferenceService.StreamCompletions.
+func (c *inferenceServiceClient) StreamCompletions(ctx context.Context, req *connect.Request[v1.CompletionsRequest]) (*connect.ServerStreamForClient[v1.StreamCompletionsResponse], error) {
+	return c.streamCompletions.CallServerStream(ctx, req)
 }
 
-// NewGreetServiceHandler builds an HTTP handler from the service implementation. It returns the
+// InferenceServiceHandler is an implementation of the inference.v1.InferenceService service.
+type InferenceServiceHandler interface {
+	GetCompletions(context.Context, *connect.Request[v1.CompletionsRequest]) (*connect.Response[v1.GetCompletionsResponse], error)
+	StreamCompletions(context.Context, *connect.Request[v1.CompletionsRequest], *connect.ServerStream[v1.StreamCompletionsResponse]) error
+}
+
+// NewInferenceServiceHandler builds an HTTP handler from the service implementation. It returns the
 // path on which to mount the handler and the handler itself.
 //
 // By default, handlers support the Connect, gRPC, and gRPC-Web protocols with the binary Protobuf
 // and JSON codecs. They also support gzip compression.
-func NewGreetServiceHandler(svc GreetServiceHandler, opts ...connect.HandlerOption) (string, http.Handler) {
-	greetServiceGreetHandler := connect.NewUnaryHandler(
-		GreetServiceGreetProcedure,
-		svc.Greet,
-		connect.WithSchema(greetServiceGreetMethodDescriptor),
+func NewInferenceServiceHandler(svc InferenceServiceHandler, opts ...connect.HandlerOption) (string, http.Handler) {
+	inferenceServiceGetCompletionsHandler := connect.NewUnaryHandler(
+		InferenceServiceGetCompletionsProcedure,
+		svc.GetCompletions,
+		connect.WithSchema(inferenceServiceGetCompletionsMethodDescriptor),
 		connect.WithHandlerOptions(opts...),
 	)
-	return "/inference.v1.GreetService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	inferenceServiceStreamCompletionsHandler := connect.NewServerStreamHandler(
+		InferenceServiceStreamCompletionsProcedure,
+		svc.StreamCompletions,
+		connect.WithSchema(inferenceServiceStreamCompletionsMethodDescriptor),
+		connect.WithHandlerOptions(opts...),
+	)
+	return "/inference.v1.InferenceService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
-		case GreetServiceGreetProcedure:
-			greetServiceGreetHandler.ServeHTTP(w, r)
+		case InferenceServiceGetCompletionsProcedure:
+			inferenceServiceGetCompletionsHandler.ServeHTTP(w, r)
+		case InferenceServiceStreamCompletionsProcedure:
+			inferenceServiceStreamCompletionsHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
 	})
 }
 
-// UnimplementedGreetServiceHandler returns CodeUnimplemented from all methods.
-type UnimplementedGreetServiceHandler struct{}
+// UnimplementedInferenceServiceHandler returns CodeUnimplemented from all methods.
+type UnimplementedInferenceServiceHandler struct{}
 
-func (UnimplementedGreetServiceHandler) Greet(context.Context, *connect.Request[v1.GreetRequest]) (*connect.Response[v1.GreetResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("inference.v1.GreetService.Greet is not implemented"))
+func (UnimplementedInferenceServiceHandler) GetCompletions(context.Context, *connect.Request[v1.CompletionsRequest]) (*connect.Response[v1.GetCompletionsResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("inference.v1.InferenceService.GetCompletions is not implemented"))
+}
+
+func (UnimplementedInferenceServiceHandler) StreamCompletions(context.Context, *connect.Request[v1.CompletionsRequest], *connect.ServerStream[v1.StreamCompletionsResponse]) error {
+	return connect.NewError(connect.CodeUnimplemented, errors.New("inference.v1.InferenceService.StreamCompletions is not implemented"))
 }
