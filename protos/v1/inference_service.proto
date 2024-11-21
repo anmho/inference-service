@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package inference.v1;
+
+option go_package = "github.com/anmho/protos/gen/protos/v1;inferencev1";
+
+message GreetRequest {
+  string name = 1;
+}
+
+message GreetResponse {
+  string greeting = 1;
+}
+
+service GreetService {
+  rpc Greet(GreetRequest) returns (GreetResponse) {}
+}
