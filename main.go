@@ -1,5 +1,7 @@
 package main
 
-func main() {
+import "github.com/openai/openai-go"
 
+func main() {
+	openai.NewClient()
 }
