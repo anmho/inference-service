@@ -22,12 +22,13 @@ var getCompletionsCmd = &cobra.Command{
 	Use:   "get",
 	Short: "Get completions",
 	Run: func(cmd *cobra.Command, args []string) {
+		fmt.Println("Getting completions!")
 		ctx := context.Background()
 		msg := &pb.CompletionsRequest{
 			Prompt: "What is your name?",
 		}
 		request := &connect.Request[pb.CompletionsRequest]{Msg: msg}
-		fmt.Println("Getting completions!")
+
 		response, err := client.GetCompletions(ctx, request)
 		if err != nil {
 			log.Fatalln(err)
@@ -44,10 +45,25 @@ var streamCompletionsCmd = &cobra.Command{
 	},
 }
 
+var rootCmd = &cobra.Command{
+	Use:   "completions-cli",
+	Short: "A completions cli",
+}
+
+const (
+	BaseURL = "http://localhost:8080"
+)
+
 func main() {
-	client = inferencev1connect.NewInferenceServiceClient(http.DefaultClient, "localhost:8080")
+	fmt.Println("hello")
+	client = inferencev1connect.NewInferenceServiceClient(http.DefaultClient, BaseURL)
 
 	completionsCmd.AddCommand(getCompletionsCmd)
 	completionsCmd.AddCommand(streamCompletionsCmd)
 
+	rootCmd.AddCommand(completionsCmd)
+	err := rootCmd.Execute()
+	if err != nil {
+		fmt.Println(err)
+	}
 }

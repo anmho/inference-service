@@ -11,11 +11,11 @@ clean:
 	@rm -rf gen
 	@rm -rf bin
 
-api:
+api: gen
 	@go build -o ./bin/api ./cmd/api
 
-cli:
-	@go build -o ./bin/client/ ./cmd/client
+cli: gen
+	@go build -o ./bin/client ./cmd/client
 watch:
 	@air --build.cmd "make api" --build.bin "./bin/api"
 
