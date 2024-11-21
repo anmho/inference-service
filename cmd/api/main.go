@@ -1,13 +1,16 @@
 package main
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"github.com/anmho/inference/gen/protos/v1/inferencev1connect"
 	"github.com/anmho/inference/inference"
 	"github.com/caarlos0/env/v11"
+	"github.com/google/generative-ai-go/genai"
 	"github.com/joho/godotenv"
 	"github.com/openai/openai-go"
+	"github.com/openai/openai-go/option"
 	"golang.org/x/net/http2"
 	"golang.org/x/net/http2/h2c"
 	"log/slog"
@@ -16,7 +19,8 @@ import (
 )
 
 type Config struct {
-	Port int `env:"PORT" envDefault:"8080"`
+	OpenAIAPIKey string `env:"OPENAI_API_KEY"`
+	Port         int    `env:"PORT" envDefault:"8080"`
 }
 
 func main() {
@@ -32,8 +36,15 @@ func main() {
 		os.Exit(1)
 	}
 
-	openaiClient := openai.NewClient()
-	inferenceService := inference.NewService(openaiClient)
+	ctx := context.Background()
+	googleAIClient, err := genai.NewClient(ctx)
+	if err != nil {
+		slog.Error("creating google ai client", slog.Any("error", err))
+		os.Exit(1)
+	}
+
+	openaiClient := openai.NewClient(option.WithAPIKey(config.OpenAIAPIKey))
+	inferenceService := inference.NewService(openaiClient, googleAIClient)
 
 	mux := http.NewServeMux()
 	mux.Handle(inferencev1connect.NewInferenceServiceHandler(inferenceService))
