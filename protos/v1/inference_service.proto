@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package inference.v1;
 
-option go_package = "github.com/anmho/protos/gen/protos/v1;inferencev1";
+option go_package = "github.com/anmho/inference/gen/inference/v1;inferencev1";
 
 message GreetRequest {
   string name = 1;
